@@ -26,8 +26,15 @@ func abs(x int) int {
     return x
 }
 
-func solve(input string) int {
-    // Your solution here
+func countOccurrences(list []int) map[int]int {
+    occurrences := make(map[int]int)
+    for _, num := range list {
+        occurrences[num]++
+    }
+    return occurrences
+}
+
+func parseInput(input string) ([]int, []int) {
     lines := strings.Split(input, "\n")
     var list1, list2 []int
     for _, line := range lines {
@@ -49,6 +56,11 @@ func solve(input string) int {
         list1 = append(list1, num1)
         list2 = append(list2, num2)
     }
+    return list1, list2
+}
+
+func solve1(input string) int {
+    list1, list2 := parseInput(input)
     slices.Sort(list1)
     slices.Sort(list2)
     tuples, err := zip(list1, list2)
@@ -62,9 +74,22 @@ func solve(input string) int {
     return difference
 }
 
+func solve2(input string) int {
+    list1, list2 := parseInput(input)
+    list2Counts := countOccurrences(list2)
+    similarity := 0
+    for _, num := range list1 {
+        list2Count := list2Counts[num]
+        similarity += (num * list2Count)
+    }
+    return similarity
+}
+
 func main() {
     // Read input from input.txt
     input, _ := os.ReadFile("./day01/input.txt")
-    result := solve(string(input))
-    fmt.Printf("Result: %d\n", result)
+    part1Result := solve1(string(input))
+    part2Result := solve2(string(input))
+    fmt.Printf("Result (part 1): %d\n", part1Result)
+    fmt.Printf("Result (part 2): %d\n", part2Result)
 }
